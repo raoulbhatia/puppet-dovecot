@@ -4,6 +4,8 @@ class dovecot::ssl (
   $ssl_keyfile       = false,
   $ssl_ca            = false,
   $ssl_key_pass_file = false,
+  $ssl_cipher_list   = false,
+  $ssl_prefer_server_ciphers = false,
 ) {
   include dovecot
 
@@ -37,5 +39,15 @@ class dovecot::ssl (
     ensure      => $ssl_ca ? { false => absent, default => present },
     config_file => 'conf.d/10-ssl.conf',
     value       => "<${ssl_ca}",
+  }
+
+  dovecot::config::dovecotcfsingle { 'ssl_cipher_list':
+    config_file => 'conf.d/10-ssl.conf',
+    value       => $ssl_cipher_list,
+  }
+
+  dovecot::config::dovecotcfsingle { 'ssl_prefer_server_ciphers':
+    config_file => 'conf.d/10-ssl.conf',
+    value       => $ssl_prefer_server_ciphers,
   }
 }
