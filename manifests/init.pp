@@ -10,7 +10,8 @@
 #   - installs dovecot package
 #   - starts dovecot service
 class dovecot(
-  $master_config_file = undef
+  $master_config_file = undef,
+  $package_configfiles  = 'keep'
 ) {
 
   $package_name = $::osfamily ? {
@@ -20,9 +21,10 @@ class dovecot(
   }
 
   package { $package_name:
-    ensure => installed,
-    alias  => 'dovecot',
-    before => Exec['dovecot']
+    ensure      => installed,
+    configfiles => $package_configfiles,
+    alias       => 'dovecot',
+    before      => Exec['dovecot']
   }
 
   exec { 'dovecot':
